@@ -1,8 +1,7 @@
-package com.example.homeworke4_2
+package com.example.homeworke4_2.remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 class RetrofitService {
 

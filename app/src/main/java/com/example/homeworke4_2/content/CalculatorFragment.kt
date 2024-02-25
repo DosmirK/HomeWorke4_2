@@ -6,17 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.example.homeworke4_2.LoveModel
-import com.example.homeworke4_2.LoveView
-import com.example.homeworke4_2.Presenter
+import androidx.fragment.app.viewModels
+import com.example.homeworke4_2.LoveViewModel
+import com.example.homeworke4_2.remote.LoveModel
 import com.example.homeworke4_2.R
 import com.example.homeworke4_2.databinding.FragmentCalculatorBinding
 
-class CalculatorFragment : Fragment(), LoveView {
+class CalculatorFragment : Fragment() {
     private var _binding: FragmentCalculatorBinding? = null
     private val binding get() = _binding!!
-    private val presenter = Presenter(this)
+    private val viewModel: LoveViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,27 +31,25 @@ class CalculatorFragment : Fragment(), LoveView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initClicker()
+        initClickers()
     }
 
-    private fun initClicker() {
-        with(binding){
+    private fun initClickers() {
+        with(binding) {
             calculate.setOnClickListener {
-                presenter.getPercentage(fNameEt.text.toString(), sNameEt.text.toString())
+                viewModel.getPercentage(fNameEt.text.toString(), sNameEt.text.toString())
+                    .observe(viewLifecycleOwner) {
+                        val result = it
+
+                        viewResult(it)
+                    }
             }
         }
     }
-    private fun openFragment(fragment: Fragment){
-        val fragmentManager = parentFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    override fun viewResult(loveModel: LoveModel) {
+    private fun viewResult(loveModel: LoveModel) {
         val fragment = ResultFragment()
-        val result = loveModel.result + "\n%" + loveModel.percentage
+        val collocated = loveModel.fname + " + " + loveModel.sname + "\n"
+        val result = collocated + loveModel.percentage + "%" + "\n" + loveModel.result
         val bundle = Bundle().apply {
             putString("result", result)
         }
@@ -60,8 +57,11 @@ class CalculatorFragment : Fragment(), LoveView {
         openFragment(fragment)
     }
 
-    override fun showError(message: String) {
-        Log.d("ololo", message)
-
+    private fun openFragment(fragment: Fragment) {
+        val fragmentManager = parentFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 }
