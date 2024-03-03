@@ -28,4 +28,11 @@
         android:textSize="32sp"
         android:id="@+id/calculate"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/history"
+        android:textSize="32sp"
+        android:id="@+id/btn_history"/>
+
 </LinearLayout>

@@ -1,12 +1,12 @@
 package com.example.homeworke4_2.content
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.homeworke4_2.App
 import com.example.homeworke4_2.LoveViewModel
 import com.example.homeworke4_2.remote.LoveModel
 import com.example.homeworke4_2.R
@@ -39,10 +39,19 @@ class CalculatorFragment : Fragment() {
             calculate.setOnClickListener {
                 viewModel.getPercentage(fNameEt.text.toString(), sNameEt.text.toString())
                     .observe(viewLifecycleOwner) {
-                        val result = it
-
+                        App.appDatabase.loveDao().insert(it)
                         viewResult(it)
                     }
+            }
+            btnHistory.setOnClickListener {
+                val historyFragment = HistoryFragment()
+                val fragmentManager = requireActivity().supportFragmentManager
+
+                fragmentManager.beginTransaction().apply {
+                    replace(R.id.fragment_container, historyFragment)
+                    addToBackStack(null)
+                    commit()
+                }
             }
         }
     }
